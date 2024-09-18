@@ -1,1 +1,6 @@
+const aluno = {
+    nome: "Gustavo",
+    curso: "Engenharia de Software",
+    IRA: 8.5
+};
 
