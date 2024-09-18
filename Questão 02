@@ -1,1 +1,56 @@
+// App.js
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const App = () => {
+    const [alunos, setAlunos] = useState([]);
+    const [nome, setNome] = useState('');
+    const [curso, setCurso] = useState('');
+    const [IRA, setIRA] = useState('');
+
+    useEffect(() => {
+        fetchAlunos();
+    }, []);
+
+    const fetchAlunos = async () => {
+        const response = await axios.get('http://localhost:3001/alunos');
+        setAlunos(response.data);
+    };
+
+    const createAluno = async () => {
+        const response = await axios.post('http://localhost:3001/alunos', { nome, curso, IRA });
+        setAlunos([...alunos, response.data]);
+    };
+
+    const updateAluno = async (id) => {
+        const response = await axios.put(`http://localhost:3001/alunos/${id}`, { nome, curso, IRA });
+        setAlunos(alunos.map(aluno => (aluno._id === id ? response.data : aluno)));
+    };
+
+    const deleteAluno = async (id) => {
+        await axios.delete(`http://localhost:3001/alunos/${id}`);
+        setAlunos(alunos.filter(aluno => aluno._id !== id));
+    };
+
+    return (
+        <div>
+            <h1>Gerenciamento de Alunos</h1>
+            <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+            <input type="text" placeholder="Curso" value={curso} onChange={(e) => setCurso(e.target.value)} />
+            <input type="number" placeholder="IRA" value={IRA} onChange={(e) => setIRA(e.target.value)} />
+            <button onClick={createAluno}>Adicionar Aluno</button>
+            <ul>
+                {alunos.map(aluno => (
+                    <li key={aluno._id}>
+                        {aluno.nome} - {aluno.curso} - {aluno.IRA}
+                        <button onClick={() => updateAluno(aluno._id)}>Atualizar</button>
+                        <button onClick={() => deleteAluno(aluno._id)}>Deletar</button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default App;
 
