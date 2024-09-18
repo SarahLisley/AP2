@@ -1,0 +1,47 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const AlunosTable = () => {
+  const [alunos, setAlunos] = useState([]);
+
+  useEffect(() => {
+    // Substitua pela sua URL da API
+    axios.get('http://localhost:5000/alunos')
+      .then(response => {
+        setAlunos(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar alunos:', error);
+      });
+  }, []);
+
+  const calcularMediaIRA = () => {
+    const totalIRA = alunos.reduce((acc, aluno) => acc + aluno.ira, 0);
+    return (totalIRA / alunos.length).toFixed(2);
+  };
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>IRA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {alunos.map(aluno => (
+          <tr key={aluno.id}>
+            <td>{aluno.nome}</td>
+            <td>{aluno.ira}</td>
+          </tr>
+        ))}
+        <tr style={{ backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>
+          <td>Média IRA</td>
+          <td>{calcularMediaIRA()}</td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+
+export default AlunosTable;
