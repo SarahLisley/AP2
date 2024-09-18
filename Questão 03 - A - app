@@ -1,0 +1,13 @@
+import React from 'react';
+import DropdownMenu from './DropdownMenu';
+
+const App = () => {
+  return (
+    <div>
+      <h1>Menu Dropdown</h1>
+      <DropdownMenu />
+    </div>
+  );
+};
+
+export default App;
