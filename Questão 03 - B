@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const AlunosTable = () => {
+  const [alunos, setAlunos] = useState([]);
+  const [colorir, setColorir] = useState(false);
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/alunos')
+      .then(response => {
+        setAlunos(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar alunos:', error);
+      });
+  }, []);
+
+  const calcularMediaIRA = () => {
+    const totalIRA = alunos.reduce((acc, aluno) => acc + aluno.ira, 0);
+    return (totalIRA / alunos.length).toFixed(2);
+  };
+
+  const mediaIRA = calcularMediaIRA();
+
+  const toggleColorir = () => {
+    setColorir(!colorir);
+  };
+
+  return (
+    <div>
+      <button onClick={toggleColorir}>
+        {colorir ? 'Remover Cores' : 'Colorir Linhas'}
+      </button>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>IRA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {alunos.map(aluno => (
+            <tr
+              key={aluno.id}
+              style={{
+                backgroundColor: colorir
+                  ? aluno.ira < mediaIRA
+                    ? 'red'
+                    : 'blue'
+                  : 'white',
+                color: colorir ? 'white' : 'black'
+              }}
+            >
+              <td>{aluno.nome}</td>
+              <td>{aluno.ira}</td>
+            </tr>
+          ))}
+          <tr style={{ backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>
+            <td>Média IRA</td>
+            <td>{mediaIRA}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default AlunosTable;
